@@ -85,6 +85,7 @@ step: 0.5
 ```
 ### Examples
 #### Wave
+![e1](https://github.com/Xiao-MoMi/CustomFishing-Particle/assets/70987828/2fa4f9fe-a545-41b9-ac38-e23f881291e4)
 ```yaml
 particle_1:
   type: particle
@@ -128,6 +129,7 @@ particle_3:
           y1: '0.4'
 ```
 #### Rainbow
+![e2](https://github.com/Xiao-MoMi/CustomFishing-Particle/assets/70987828/4ff8c196-845c-4930-a664-6154f4dd7421)
 ```yaml
 particle_1:
   type: particle
