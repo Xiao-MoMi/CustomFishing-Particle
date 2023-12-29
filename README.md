@@ -142,7 +142,7 @@ particle_1:
     step: 1
     y1: '1'
     zAxisRotation: 90
-    xAxisRotation: '-{yaw} + 90'
+    xAxisRotation: '-{yaw} + 90'  # You have to register {yaw} in config.yml before using it. The original placeholder is %player_yaw%
     startAngle: -75
     angle: 150
 particle_2:
