@@ -26,9 +26,7 @@ offsetZ: 0
 extra: 0
 
 # Only available when particle is ITEM_CRACK
-itemStack: 
-  material: paper
-  custom-model-data: 1000
+item: CustomFishing:rod:star_rod
 
 # Only available when particle is REDSTONE/DUST_COLOR_TRANSITION
 color: 255,0,0

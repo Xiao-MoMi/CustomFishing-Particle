@@ -1,10 +1,12 @@
 package net.momirealms.customfishing.expansion;
 
-import net.momirealms.customfishing.api.CustomFishingPlugin;
-import net.momirealms.customfishing.api.manager.PlaceholderManager;
+import net.momirealms.customfishing.api.BukkitCustomFishingPlugin;
 import net.momirealms.customfishing.api.mechanic.action.Action;
-import net.momirealms.customfishing.api.mechanic.condition.Condition;
+import net.momirealms.customfishing.api.mechanic.context.Context;
+import net.momirealms.customfishing.api.mechanic.misc.placeholder.PlaceholderManager;
+import net.momirealms.customfishing.api.mechanic.misc.value.MathValue;
 import org.bukkit.Color;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -72,16 +74,16 @@ public abstract class ParticleAction implements Action {
         this.scale = scale;
     }
 
-    protected abstract ParticleObject setProperties(Condition condition);
+    protected abstract ParticleObject setProperties(Context context);
 
     @Override
-    public void trigger(Condition condition) {
+    public void trigger(Context context) {
         if (Math.random() < chance) {
-            PlaceholderManager manager = CustomFishingPlugin.getInstance().getPlaceholderManager();
-            var particle = setProperties(condition);
-            particle.addMatrix(Matrixs.rotateAroundYAxis(manager.getExpressionValue(condition.getPlayer(), yAxis, condition.getArgs())));
-            particle.addMatrix(Matrixs.rotateAroundXAxis(manager.getExpressionValue(condition.getPlayer(), xAxis, condition.getArgs())));
-            particle.addMatrix(Matrixs.rotateAroundZAxis(manager.getExpressionValue(condition.getPlayer(), zAxis, condition.getArgs())));
+            var particle = setProperties(context);
+            PlaceholderManager manager = BukkitCustomFishingPlugin.getInstance().getPlaceholderManager();
+            particle.addMatrix(Matrixs.rotateAroundYAxis(MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), yAxis, context.placeholderMap())).evaluate(context)));
+            particle.addMatrix(Matrixs.rotateAroundXAxis(MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), xAxis, context.placeholderMap())).evaluate(context)));
+            particle.addMatrix(Matrixs.rotateAroundZAxis(MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), zAxis, context.placeholderMap())).evaluate(context)));
             particle.show();
         }
     }

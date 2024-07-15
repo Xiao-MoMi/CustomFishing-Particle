@@ -1,17 +1,22 @@
 package net.momirealms.customfishing.expansion.effect;
 
-import net.momirealms.customfishing.api.CustomFishingPlugin;
-import net.momirealms.customfishing.api.manager.PlaceholderManager;
-import net.momirealms.customfishing.api.mechanic.condition.Condition;
+import net.momirealms.customfishing.api.BukkitCustomFishingPlugin;
+import net.momirealms.customfishing.api.mechanic.context.Context;
+import net.momirealms.customfishing.api.mechanic.context.ContextKeys;
+import net.momirealms.customfishing.api.mechanic.misc.placeholder.PlaceholderManager;
+import net.momirealms.customfishing.api.mechanic.misc.value.MathValue;
 import net.momirealms.customfishing.expansion.ParticleAction;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.zoyn.particlelib.pobject.Cube;
-import top.zoyn.particlelib.pobject.Line;
 import top.zoyn.particlelib.pobject.ParticleObject;
+
+import static java.util.Objects.requireNonNull;
 
 public class CubeEffect extends ParticleAction {
 
@@ -29,15 +34,15 @@ public class CubeEffect extends ParticleAction {
     }
 
     @Override
-    protected ParticleObject setProperties(Condition condition) {
-        Location base = playerOrOther ? condition.getPlayer().getLocation() : condition.getLocation();
-        PlaceholderManager manager = CustomFishingPlugin.getInstance().getPlaceholderManager();
-        double dy1 = manager.getExpressionValue(condition.getPlayer(), yExp, condition.getArgs());
-        double dz1 = manager.getExpressionValue(condition.getPlayer(), zExp, condition.getArgs());
-        double dx1 = manager.getExpressionValue(condition.getPlayer(), xExp, condition.getArgs());
-        double dy2 = manager.getExpressionValue(condition.getPlayer(), y2, condition.getArgs());
-        double dz2 = manager.getExpressionValue(condition.getPlayer(), z2, condition.getArgs());
-        double dx2 = manager.getExpressionValue(condition.getPlayer(), x2, condition.getArgs());
+    protected ParticleObject setProperties(Context context) {
+        Location base = playerOrOther ? ((Player) context.getHolder()).getLocation() : (Location) requireNonNull(context.arg(ContextKeys.OTHER_LOCATION));
+        PlaceholderManager manager = BukkitCustomFishingPlugin.getInstance().getPlaceholderManager();
+        double dy1 = MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), yExp, context.placeholderMap())).evaluate(context);
+        double dz1 = MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), zExp, context.placeholderMap())).evaluate(context);
+        double dx1 = MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), xExp, context.placeholderMap())).evaluate(context);
+        double dy2 = MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), y2, context.placeholderMap())).evaluate(context);
+        double dz2 = MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), z2, context.placeholderMap())).evaluate(context);
+        double dx2 = MathValue.expression(manager.parse((OfflinePlayer) context.getHolder(), x2, context.placeholderMap())).evaluate(context);
         Cube cube = new Cube(base.clone().add(dx1, dy1, dz1), base.clone().add(dx2, dy2, dz2));
         super.initParticleObject(cube);
         cube.setStep(step);
