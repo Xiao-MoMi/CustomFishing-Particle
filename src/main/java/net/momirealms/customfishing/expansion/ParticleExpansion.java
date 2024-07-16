@@ -3,6 +3,7 @@ package net.momirealms.customfishing.expansion;
 import net.momirealms.customfishing.api.BukkitCustomFishingPlugin;
 import net.momirealms.customfishing.api.mechanic.action.ActionExpansion;
 import net.momirealms.customfishing.api.mechanic.action.ActionFactory;
+import net.momirealms.customfishing.api.mechanic.config.GUIItemParser;
 import net.momirealms.customfishing.api.mechanic.context.Context;
 import net.momirealms.customfishing.expansion.effect.*;
 import net.momirealms.customfishing.libraries.boostedyaml.block.implementation.Section;
@@ -52,12 +53,8 @@ public class ParticleExpansion extends ActionExpansion<Player> {
             float scale = section.getFloat("scale", 1.0f);
 
             ItemStack itemStack;
-            if (section.contains("item"))
-                itemStack = BukkitCustomFishingPlugin.getInstance()
-                        .getItemManager()
-                        .buildAny(Context.player(null), section.getString("item"));
-            else
-                itemStack = null;
+            GUIItemParser parser = new GUIItemParser("particle", section.getSection("itemStake"), BukkitCustomFishingPlugin.getInstance().getConfigManager().getFormatFunctions());
+            itemStack = parser.getItem().build(Context.player(null));
 
             Color color;
             if (section.contains("color")) {
