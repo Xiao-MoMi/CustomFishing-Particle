@@ -37,11 +37,11 @@ public class ArcEffect extends ParticleAction {
     }
 
     @Override
-    protected ParticleObject setProperties(Context context) {
+    protected ParticleObject setProperties(Context<Player> context) {
         double y = yMathValue.evaluate(context);
         double z = zMathValue.evaluate(context);
         double x = xMathValue.evaluate(context);
-        Location base = playerOrOther ? ((Player) context.getHolder()).getLocation() : (Location) requireNonNull(context.arg(ContextKeys.OTHER_LOCATION));
+        Location base = playerOrOther ? context.getHolder().getLocation() : requireNonNull(context.arg(ContextKeys.OTHER_LOCATION));
         Arc arc = new Arc(base.clone().add(x, y, z));
         super.initParticleObject(arc);
         arc.setRadius(radius);

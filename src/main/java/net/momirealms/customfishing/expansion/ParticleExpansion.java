@@ -3,7 +3,7 @@ package net.momirealms.customfishing.expansion;
 import net.momirealms.customfishing.api.BukkitCustomFishingPlugin;
 import net.momirealms.customfishing.api.mechanic.action.ActionExpansion;
 import net.momirealms.customfishing.api.mechanic.action.ActionFactory;
-import net.momirealms.customfishing.api.mechanic.config.GUIItemParser;
+import net.momirealms.customfishing.api.mechanic.config.SingleItemParser;
 import net.momirealms.customfishing.api.mechanic.context.Context;
 import net.momirealms.customfishing.expansion.effect.*;
 import net.momirealms.customfishing.libraries.boostedyaml.block.implementation.Section;
@@ -52,9 +52,11 @@ public class ParticleExpansion extends ActionExpansion<Player> {
             double extra = section.getDouble("extra", 0.0);
             float scale = section.getFloat("scale", 1.0f);
 
-            ItemStack itemStack;
-            GUIItemParser parser = new GUIItemParser("particle", section.getSection("itemStake"), BukkitCustomFishingPlugin.getInstance().getConfigManager().getFormatFunctions());
-            itemStack = parser.getItem().build(Context.player(null));
+            ItemStack itemStack = null;
+            if (section.contains("itemStack")) {
+                SingleItemParser parser = new SingleItemParser("particle", section.getSection("itemStack"), BukkitCustomFishingPlugin.getInstance().getConfigManager().getFormatFunctions());
+                itemStack = parser.getItem().build(Context.player(null));
+            }
 
             Color color;
             if (section.contains("color")) {

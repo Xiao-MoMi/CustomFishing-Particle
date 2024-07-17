@@ -37,8 +37,8 @@ public class CubeEffect extends ParticleAction {
     }
 
     @Override
-    protected ParticleObject setProperties(Context context) {
-        Location base = playerOrOther ? ((Player) context.getHolder()).getLocation() : (Location) requireNonNull(context.arg(ContextKeys.OTHER_LOCATION));
+    protected ParticleObject setProperties(Context<Player> context) {
+        Location base = playerOrOther ? context.getHolder().getLocation() : requireNonNull(context.arg(ContextKeys.OTHER_LOCATION));
         double dy1 = yMathValue.evaluate(context);
         double dz1 = zMathValue.evaluate(context);
         double dx1 = xMathValue.evaluate(context);

@@ -4,6 +4,9 @@
 ② Run command /cfishing reload\
 ③ Enjoy
 
+### Note
+Bukkit has changed the names of particles since 1.20.5, please refer to corresponding javadocs
+
 ### Particle Properties
 ##### Required
 ```yaml
@@ -26,7 +29,7 @@ offsetZ: 0
 extra: 0
 
 # Only available when particle is ITEM_CRACK
-itemStake: 
+itemStack: 
   material: PAPER
   custom-model-data: 10000
 
@@ -134,7 +137,7 @@ particle_3:
 particle_1:
   type: particle
   value:
-    particle: REDSTONE
+    particle: REDSTONE 
     pos: other
     color: 153,50,204
     shape: arc

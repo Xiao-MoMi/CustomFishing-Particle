@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import top.zoyn.particlelib.pobject.ParticleObject;
 import top.zoyn.particlelib.utils.matrix.Matrixs;
 
-public abstract class ParticleAction implements Action {
+public abstract class ParticleAction implements Action<Player> {
 
     protected final boolean playerOrOther;
     protected final double chance;
@@ -72,10 +72,10 @@ public abstract class ParticleAction implements Action {
         this.scale = scale;
     }
 
-    protected abstract ParticleObject setProperties(Context context);
+    protected abstract ParticleObject setProperties(Context<Player> context);
 
     @Override
-    public void trigger(Context context) {
+    public void trigger(Context<Player> context) {
         if (Math.random() < chance) {
             var particle = setProperties(context);
             particle.addMatrix(Matrixs.rotateAroundYAxis(yAxisMathValue.evaluate(context)));
