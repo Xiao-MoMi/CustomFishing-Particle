@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.momirealms"
-version = "1.0"
+version = "1.1"
 
 repositories {
     mavenCentral()
@@ -15,13 +15,13 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.0.6")
-    implementation("com.github.602723113:ParticleLib:1.5.1")
+    compileOnly("com.github.Xiao-MoMi:Custom-Fishing:2.2.0")
+    implementation("com.github.iqtesterrr:ParticleLib:1.5.4")
 }
 
 tasks {
     shadowJar {
-        relocate ("com.github.602723113", "net.momirealms.customfishing.expansion")
+        relocate ("com.github.iqtesterrr", "net.momirealms.customfishing.expansion")
     }
 }
 

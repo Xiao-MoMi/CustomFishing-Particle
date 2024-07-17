@@ -1,22 +1,24 @@
 package net.momirealms.customfishing.expansion;
 
-import net.momirealms.customfishing.api.CustomFishingPlugin;
+import net.momirealms.customfishing.api.BukkitCustomFishingPlugin;
 import net.momirealms.customfishing.api.mechanic.action.ActionExpansion;
 import net.momirealms.customfishing.api.mechanic.action.ActionFactory;
-import net.momirealms.customfishing.api.util.LogUtils;
+import net.momirealms.customfishing.api.mechanic.config.GUIItemParser;
+import net.momirealms.customfishing.api.mechanic.context.Context;
 import net.momirealms.customfishing.expansion.effect.*;
+import net.momirealms.customfishing.libraries.boostedyaml.block.implementation.Section;
 import org.bukkit.Color;
 import org.bukkit.Particle;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Locale;
 
-public class ParticleExpansion extends ActionExpansion {
+public class ParticleExpansion extends ActionExpansion<Player> {
 
     @Override
     public String getVersion() {
-        return "1.0";
+        return "1.1";
     }
 
     @Override
@@ -30,12 +32,11 @@ public class ParticleExpansion extends ActionExpansion {
     }
 
     @Override
-    public ActionFactory getActionFactory() {
+    public ActionFactory<Player> getActionFactory() {
         return (args, chance) -> {
-            if (!(args instanceof ConfigurationSection section)) {
+            if (!(args instanceof Section section)) {
                 throw new RuntimeException("Invalid config format for particle action.");
             }
-
             String x1 = getString(section.get("x1", "0"));
             String y1 = getString(section.get("y1", "0"));
             String z1 = getString(section.get("z1", "0"));
@@ -45,20 +46,15 @@ public class ParticleExpansion extends ActionExpansion {
             Particle particle = Particle.valueOf(section.getString("particle", "").toUpperCase(Locale.ENGLISH));
             boolean playerOrOther = section.getString("pos", "other").equals("player");
             int count = section.getInt("count", 1);
-            double offsetX = section.getDouble("offsetX", 0);
-            double offsetY = section.getDouble("offsetY", 0);
-            double offsetZ = section.getDouble("offsetZ", 0);
-            double extra = section.getDouble("extra", 0);
-            float scale = (float) section.getDouble("scale", 1);
+            double offsetX = section.getDouble("offsetX", 0.0);
+            double offsetY = section.getDouble("offsetY", 0.0);
+            double offsetZ = section.getDouble("offsetZ", 0.0);
+            double extra = section.getDouble("extra", 0.0);
+            float scale = section.getFloat("scale", 1.0f);
 
             ItemStack itemStack;
-            if (section.contains("itemStack"))
-                itemStack = CustomFishingPlugin.get()
-                    .getItemManager()
-                    .getItemBuilder(section.getConfigurationSection("itemStack"), "particle", "item")
-                    .build();
-            else
-                itemStack = null;
+            GUIItemParser parser = new GUIItemParser("particle", section.getSection("itemStake"), BukkitCustomFishingPlugin.getInstance().getConfigManager().getFormatFunctions());
+            itemStack = parser.getItem().build(Context.player(null));
 
             Color color;
             if (section.contains("color")) {
@@ -79,8 +75,8 @@ public class ParticleExpansion extends ActionExpansion {
             ParticleAction particleAction = null;
             switch (section.getString("shape", "none")) {
                 case "circle" -> {
-                    double radius = section.getDouble("radius", 1);
-                    double step = section.getDouble("step", 1);
+                    double radius = section.getDouble("radius", 1.0);
+                    double step = section.getDouble("step", 1.0);
                     particleAction = new CircleEffect(
                             playerOrOther,
                             chance,
@@ -108,7 +104,7 @@ public class ParticleExpansion extends ActionExpansion {
                     String x2 = getString(section.get("x2", "0"));
                     String y2 = getString(section.get("y2", "0"));
                     String z2 = getString(section.get("z2", "0"));
-                    double step = section.getDouble("step", 1);
+                    double step = section.getDouble("step", 1.0);
                     particleAction = new LineEffect(
                             playerOrOther,
                             chance,
@@ -138,7 +134,7 @@ public class ParticleExpansion extends ActionExpansion {
                     String x2 = getString(section.get("x2", "0"));
                     String y2 = getString(section.get("y2", "0"));
                     String z2 = getString(section.get("z2", "0"));
-                    double step = section.getDouble("step", 1);
+                    double step = section.getDouble("step", 1.0);
                     particleAction = new CubeEffect(
                             playerOrOther,
                             chance,
@@ -167,8 +163,8 @@ public class ParticleExpansion extends ActionExpansion {
                 case "arc" -> {
                     String angle = getString(section.get("angle", "180"));
                     String startAngle = getString(section.get("startAngle", "0"));
-                    double radius = section.getDouble("radius", 1);
-                    double step = section.getDouble("step", 1);
+                    double radius = section.getDouble("radius", 1.0);
+                    double step = section.getDouble("step", 1.0);
                     particleAction = new ArcEffect(
                             playerOrOther,
                             chance,
@@ -195,7 +191,7 @@ public class ParticleExpansion extends ActionExpansion {
                     );
                 }
                 case "sphere" -> {
-                    double radius = section.getDouble("radius", 3);
+                    double radius = section.getDouble("radius", 3.0);
                     int sample = section.getInt("sample", 10);
                     particleAction = new SphereEffect(
                             playerOrOther,
@@ -220,7 +216,7 @@ public class ParticleExpansion extends ActionExpansion {
                             sample
                     );
                 }
-                default -> LogUtils.warn("No valid shape is set for action: particle");
+                default -> BukkitCustomFishingPlugin.getInstance().getPluginLogger().warn("No valid shape is set for action: particle");
             }
             return particleAction;
         };

@@ -1,11 +1,11 @@
 package net.momirealms.customfishing.expansion;
 
-import net.momirealms.customfishing.api.CustomFishingPlugin;
-import net.momirealms.customfishing.api.manager.PlaceholderManager;
 import net.momirealms.customfishing.api.mechanic.action.Action;
-import net.momirealms.customfishing.api.mechanic.condition.Condition;
+import net.momirealms.customfishing.api.mechanic.context.Context;
+import net.momirealms.customfishing.api.mechanic.misc.value.MathValue;
 import org.bukkit.Color;
 import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.zoyn.particlelib.pobject.ParticleObject;
@@ -18,9 +18,9 @@ public abstract class ParticleAction implements Action {
     protected final String yExp;
     protected final String xExp;
     protected final String zExp;
-    protected final String yAxis;
-    protected final String xAxis;
-    protected final String zAxis;
+    protected final MathValue<Player> yAxisMathValue;
+    protected final MathValue<Player> xAxisMathValue;
+    protected final MathValue<Player> zAxisMathValue;
     protected Particle particle;
     protected int count;
     protected double offsetX;
@@ -65,23 +65,22 @@ public abstract class ParticleAction implements Action {
         this.yExp = yExp;
         this.xExp = xExp;
         this.zExp = zExp;
-        this.yAxis = yAxis;
-        this.xAxis = xAxis;
-        this.zAxis = zAxis;
+        this.yAxisMathValue = MathValue.auto(yAxis);
+        this.xAxisMathValue = MathValue.auto(xAxis);
+        this.zAxisMathValue = MathValue.auto(zAxis);
         this.toColor = toColor;
         this.scale = scale;
     }
 
-    protected abstract ParticleObject setProperties(Condition condition);
+    protected abstract ParticleObject setProperties(Context context);
 
     @Override
-    public void trigger(Condition condition) {
+    public void trigger(Context context) {
         if (Math.random() < chance) {
-            PlaceholderManager manager = CustomFishingPlugin.getInstance().getPlaceholderManager();
-            var particle = setProperties(condition);
-            particle.addMatrix(Matrixs.rotateAroundYAxis(manager.getExpressionValue(condition.getPlayer(), yAxis, condition.getArgs())));
-            particle.addMatrix(Matrixs.rotateAroundXAxis(manager.getExpressionValue(condition.getPlayer(), xAxis, condition.getArgs())));
-            particle.addMatrix(Matrixs.rotateAroundZAxis(manager.getExpressionValue(condition.getPlayer(), zAxis, condition.getArgs())));
+            var particle = setProperties(context);
+            particle.addMatrix(Matrixs.rotateAroundYAxis(yAxisMathValue.evaluate(context)));
+            particle.addMatrix(Matrixs.rotateAroundXAxis(xAxisMathValue.evaluate(context)));
+            particle.addMatrix(Matrixs.rotateAroundZAxis(zAxisMathValue.evaluate(context)));
             particle.show();
         }
     }
