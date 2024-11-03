@@ -33,7 +33,7 @@ itemStack:
   material: PAPER
   custom-model-data: 10000
 
-# Only available when particle is REDSTONE/DUST_COLOR_TRANSITION
+# Only available when particle is REDSTONE(Use DUST on 1.20.5+)/DUST_COLOR_TRANSITION
 color: 255,0,0
 scale: 1
 
